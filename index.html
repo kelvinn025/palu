@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: white;
+      font-family: sans-serif;
+    }
+
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #0000ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .judul h1 {
+      font-size: 58px;
+      text-align: center;
+      margin-top: 88px;
+      margin-bottom: 50px;
+    }
+
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      margin: 100px auto;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider img {
+      width: 100vw;
+      height: auto;
+      max-width: 1200px;
+      border-radius: 20px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .prev { left: 40px; }
+    .next { right: 40px; }
+
+ .menu-bawah {
+  text-align: center;
+  margin: 100px 0;
+}
+
+.menu-bawah .kirim,
+.menu-bawah .galeri {
+  display: inline-block;
+  margin: 30px 5px;
+  text-decoration: none;
+  font-size: 36px;
+  font-weight: bold;
+  color: #0066cc;
+}
+  </style>
+</head>
+<body onload="startSlider(); hideLoading();">
+
+  <!-- Loading screen -->
+  <div id="loading">
+    <div class="loader"></div>
+  </div>
+
+  <!-- Judul -->
+  <div class="judul">
+    <h1>MEMORI KOTA PALU</h1>
+  </div>
+
+  <div class="slider">
+    <div class="slides" id="slideContainer">
+      <div class="slide"><img src="3.png" alt="Foto 1"></div>
+      <div class="slide"><img src="1.png" alt="Foto 2"></div>
+      <div class="slide"><img src="2.png" alt="Foto 3"></div>
+    </div>
+    <button class="btn prev" onclick="prevSlide()">&#10094;</button>
+    <button class="btn next" onclick="nextSlide()">&#10095;</button>
+  </div>
+
+  <div class="menu-bawah">
+  <a href="kirim.html" class="kirim">KIRIM FOTO</a>
+  <a href="galeri.html" class="galeri">LIHAT GALERI</a>
+</div>
+
+  <!-- Tambahan tombol Telegram -->
+  <div style="background-color:#003366; text-align:center; padding:30px 0; margin-top:100px;">
+    <p style="color:white; font-size:22px; font-weight:bold;">Butuh bantuan?</p>
+    <a href="https://t.me/+6289528089119" target="_blank" style="display:inline-block; background-color:#ffcc00; color:#003366; font-weight:bold; font-size:20px; padding:12px 24px; border-radius:10px; text-decoration:none;">Hubungi admin</a>
+  </div>
+
+  <script>
+    const slideContainer = document.getElementById("slideContainer");
+    let slides = slideContainer.children;
+    let currentIndex = 0;
+    let autoSlide;
+
+    const firstClone = slides[0].cloneNode(true);
+    slideContainer.appendChild(firstClone);
+
+    const totalSlides = slideContainer.children.length;
+
+    function showSlide(index) {
+      slideContainer.style.transition = 'transform 0.5s ease-in-out';
+      slideContainer.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+      currentIndex++;
+      showSlide(currentIndex);
+
+      if (currentIndex === totalSlides - 1) {
+        setTimeout(() => {
+          slideContainer.style.transition = 'none';
+          currentIndex = 0;
+          slideContainer.style.transform = `translateX(0%)`;
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              slideContainer.style.transition = 'transform 0.5s ease-in-out';
+            });
+          });
+        }, 500);
+      }
+    }
+
+    function startSlider() {
+      autoSlide = setInterval(() => {
+        nextSlide();
+      }, 3000);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      showSlide(currentIndex);
+      restartAutoSlide();
+    }
+
+    function restartAutoSlide() {
+      clearInterval(autoSlide);
+      startSlider();
+    }
+
+    function hideLoading() {
+      setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        document.querySelector('.slider').classList.add('show');
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
